@@ -40,6 +40,15 @@ internal fun KProperty<*>.getPropertyDescription(parentClass: KClass<*>): String
 internal fun KProperty<*>.getPropertyName(parentClass: KClass<*>): String? =
     this.getGraphQLName() ?: getConstructorParameter(parentClass)?.getGraphQLName() ?: this.name
 
+internal fun KProperty<*>.getPropertyPossibleUnionTypes(parentClass: KClass<*>): Array<KClass<*>> {
+    val possibleUnionTypes = this.getPossibleUnionTypes()
+    return if (possibleUnionTypes.isNotEmpty()) {
+        possibleUnionTypes
+    } else {
+        getConstructorParameter(parentClass)?.getPossibleUnionTypes() ?: emptyArray()
+    }
+}
+
 internal fun KProperty<*>.getPropertyAnnotations(parentClass: KClass<*>): List<Annotation> =
     this.annotations.union(getConstructorParameter(parentClass)?.annotations.orEmpty()).toList()
 
